@@ -52,7 +52,20 @@
                 type="text" class="form-control" name="Amount{{items.id}}" [(ngModel)] = items.amount>
             </td>
             <td name="Sales Tex">
-
+              <select [ngClass]="{'has-error': salesTax.invalid}"
+                      #salesTax = 'ngModel'
+                      required type="text" class="form-control"
+                      name="salesTax{{items.id}}"
+                      [(ngModel)] = items.salesTax
+              >
+                <option [ngValue]="null">--Select--</option>
+                <option *ngFor="let tax of salesTaxArray"
+                        [ngValue]="tax"
+                >
+                  {{tax.title}}
+                </option>
+              </select>
+              {{ items.salesTax?.value | currency }}
             </td>
           </tr>
         </tbody>

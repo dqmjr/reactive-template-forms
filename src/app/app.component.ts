@@ -17,7 +17,7 @@ export class AppComponent {
     'Sales Tex',
     'Total'
   ];
-  localItems = [{
+  localItems: any = [{
     id: 1,
     name: 'Category 1',
     items: [{
@@ -27,7 +27,13 @@ export class AppComponent {
       amount: null,
       salesTax: null
     }]
-  }]
+  }];
+  salesTaxArray = [
+    {id: 1, title: 'No tax', value: 0},
+    {id: 2, title: 'Astana', value: 10},
+    {id: 3, title: 'Almaty', value: 20}
+  ]
+
   submitForm(myForm: NgForm) {
     console.log(myForm)
   }
