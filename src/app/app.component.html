@@ -11,7 +11,7 @@
         <thead>
           <tr>
             <th *ngFor="let title of itemsTitles">{{title}}</th>
-            <td><button class="btn btn-primary">Add Category</button></td>
+            <td><button class="btn btn-primary" (click)="addCategory()">Add Category</button></td>
           </tr>
         </thead>
         <tbody *ngFor="let item of localItems">
@@ -27,15 +27,18 @@
             </td>
             <td colspan="5"></td>
             <td title="Add Item / Remove Category">
-              <button class="btn btn-primary">Add Item</button>
-              <button class="btn btn-danger">Remove Category</button>
+              <button class="btn btn-primary" (click)="addItemToCategory(item.id)">Add Item</button>
+              <button class="btn btn-danger"
+                      [disabled]="localItems.length <= 1"
+                      (click)="removeCategory(item.id)"
+              >Remove Category</button>
             </td>
           </tr>
           <tr *ngFor="let items of item['items']">
             <td></td>
             <td name="item">
-              <input [ngClass]="{'has-error': Item.invalid}"
-                #Item = 'ngModel'
+              <input [ngClass]="{'has-error': getItem.invalid}"
+                #getItem = 'ngModel'
                 required
                 type="text" class="form-control" name="item{{items.id}}" [(ngModel)] = items.name>
             </td>
@@ -49,7 +52,10 @@
               <input [ngClass]="{'has-error': Amount.invalid}"
                 #Amount = 'ngModel'
                 required pattern="^[0-9]+$"
-                type="text" class="form-control" name="Amount{{items.id}}" [(ngModel)] = items.amount>
+                type="text" class="form-control" name="Amount{{items.id}}"
+                [(ngModel)] = items.amount
+                (ngModelChange)="getTotalAmount(true)">
+                <!--after ngmodel-->
             </td>
             <td name="Sales Tex">
               <select [ngClass]="{'has-error': salesTax.invalid}"
@@ -57,22 +63,37 @@
                       required type="text" class="form-control"
                       name="salesTax{{items.id}}"
                       [(ngModel)] = items.salesTax
+                      (ngModelChange)="getTotalAmount(false)"
               >
-                <option [ngValue]="null">--Select--</option>
                 <option *ngFor="let tax of salesTaxArray"
                         [ngValue]="tax"
                 >
-                  {{tax.title}}
+                  {{ tax.title }}
                 </option>
               </select>
-              {{ items.salesTax?.value | currency }}
+              {{ items.salesTax.value | currency }}
+            </td>
+            <td title="Total">{{ + items.amount + items.salesTax.value | currency }}</td>
+            <td title="Remove item">
+              <button class="btn btn-danger" [disabled]="item['items'].length <= 1" (click)="removeItemFromCategory(item.id, items.id)" >Remove Item</button>
             </td>
           </tr>
         </tbody>
         <tfoot>
-
+          <tr>
+            <td colspan="2"></td>
+            <td title="Total">
+              <strong>Total</strong>
+            </td>
+            <td title="Amount">{{totalAmount | currency}}</td>
+            <td title="Sales Tax">{{totalTaxes | currency}}</td>
+            <td title="Total">{{totalAmount + totalTaxes | currency}}</td>
+          </tr>
         </tfoot>
       </table>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" (click)="submitForm(myForm)">Submit</button>
     </div>
   </form>
 </div>
